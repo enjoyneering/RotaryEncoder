@@ -1,0 +1,20 @@
+###########################################
+# Syntax For RotaryEncoder
+#
+###########################################
+# Datatypes             (KEYWORD1)
+###########################################
+
+RotaryEncoder            KEYWORD1
+
+###########################################
+# Methods and Functions (KEYWORD2)
+###########################################
+begin                    KEYWORD2
+updateA                  KEYWORD2
+updateB                  KEYWORD2
+updatePB                 KEYWORD2
+readPosition             KEYWORD2
+readPushButton           KEYWORD2
+setPosition              KEYWORD2
+setPushButton            KEYWORD2
