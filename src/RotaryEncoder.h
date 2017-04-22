@@ -5,7 +5,7 @@
   written by : enjoyneering79
   sourse code: https://github.com/enjoyneering/
 
-  These library can uses interrupts, specials pins are required to interface
+  This library can uses interrupts, specials pins are required to interface
 
   Board:                                  int.0  int.1  int.2  int.3  int.4  int.5
   Uno, Mini, Pro (ATmega168 & ATmega328)  2      3      x       x      x     x
@@ -45,7 +45,7 @@
 
         - Most rotary encoders make [latch] sounds. This position called "latch state".
           Latch happends after "n" number of {pulses}/ticks and vary from model to model.
-          For example: {00}, {01}, {11}, [10], {00}, [01], {11}, [10] ..., etc.
+          For example: {00}, {01}, {11}, [10], {00}, {01}, {11}, [10] ..., etc.
 
   BSD license, all text above must be included in any redistribution
 */
