@@ -45,8 +45,8 @@
 #define LCD_SPACE_SYMBOL 0x20  //space  symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 
 #define PIN_A            2     //ky-040 clk pin
-#define PIN_B            3     //ky-040 dt  pin
-#define BUTTON           4     //ky-040 sw  pin
+#define PIN_B            4     //ky-040 dt  pin
+#define BUTTON           3     //ky-040 sw  pin
 
 uint16_t buttonCounter = 0;
 
@@ -55,28 +55,27 @@ RotaryEncoder encoder(PIN_A, PIN_B, BUTTON);
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 
 
-void encoderISRa()
+void encoderISR()
 {
-  encoder.updateA();
+  encoder.readAB();
 }
 
-void encoderISRb()
+void pushButtonISR()
 {
-  encoder.updateB();
+  encoder.readPushButton();
 }
-
 
 void setup()
 {
   encoder.begin();
 
-  attachInterrupt(digitalPinToInterrupt(PIN_A), encoderISRa, CHANGE); //call encoderISRa() when any high/low changes happen on the pin
-  attachInterrupt(digitalPinToInterrupt(PIN_B), encoderISRb, CHANGE); //call encoderISRb() when any high/low changes happen on the pin
+  attachInterrupt(digitalPinToInterrupt(PIN_A),  encoderISR,    FALLING); //call encoderISR()    when high->low changes happened
+  attachInterrupt(digitalPinToInterrupt(BUTTON), pushButtonISR, FALLING); //call pushButtonISR() when high->low changes happened
 
   /* LCD connection check */ 
-  while (lcd.begin(LCD_COLUMNS, LCD_ROWS) != true)                    //20x4 display
+  while (lcd.begin(LCD_COLUMNS, LCD_ROWS) != true)                        //20x4 display
   {
-    for (uint8_t i = 0; i > 3; i++)                                   //3 blinks if PCF8574/LCD is not connected or wrong pins declaration
+    for (uint8_t i = 0; i > 3; i++)                                       //3 blinks if PCF8574/LCD is not connected or wrong pins declaration
     {
       digitalWrite(LED_BUILTIN, HIGH);
       delay(500);
@@ -99,11 +98,11 @@ void setup()
 void loop()
 {
   lcd.setCursor(10, 0);
-    lcd.print(encoder.readPosition());
+    lcd.print(encoder.getPosition());
     lcd.write(LCD_SPACE_SYMBOL);
 
-  encoder.updatePB();
-  if (encoder.readPushButton() == LOW)
+  encoder.readPushButton();
+  if (encoder.getPushButton() == LOW)
   {
     lcd.setCursor(10, 1);
       lcd.print(buttonCounter++);
