@@ -65,7 +65,9 @@
  #include <pgmspace.h>
 #endif
 
-#define ROTARY_ENCODER_LATCH 4 //number of pulses between latches. "KY-040" encoder has 4 pulses between latches & does 20 latches per 1 turn.
+#define CW   0x00
+#define CCW  0x01
+#define STOP 0x02
 
 class RotaryEncoder
 {
@@ -73,12 +75,11 @@ class RotaryEncoder
     RotaryEncoder(uint8_t encoderA, uint8_t encoderB, uint8_t encoderButton);
 
     void     begin(void);
-    void     updateA();
-    void     updateB();
-    void     updatePB();
+    void     readAB();
+    void     readPushButton();
 
-    int16_t  readPosition(void);
-    bool     readPushButton(void);
+    int16_t  getPosition(void);
+    bool     getPushButton(void);
   
     void     setPosition(int16_t position);
     void     setPushButton(bool state);
@@ -88,14 +89,10 @@ class RotaryEncoder
              uint8_t _encoderB;
              uint8_t _encoderButton;
 
-    volatile uint8_t _currValueA   = 0;
     volatile uint8_t _currValueB   = 0;
-    volatile bool    _buttonState  = true; //INPUT_PULLUP is on
+    volatile bool    _buttonState  = true; //INPUT_PULLUP is ON
 
-             uint8_t _prevValueA   = 0;
-             uint8_t _prevValueB   = 0;
-             int8_t  _tickCounter  = 0;
-             int16_t _latchCounter = 0;
+             int16_t _counter      = -1;
 };
 
 #endif
