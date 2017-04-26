@@ -80,50 +80,34 @@ void RotaryEncoder::begin()
 
 /**************************************************************************/
 /*
-    updateA()
+    isrAB()
 
-    Reads A values
+    Interrupt Service Routine called when pin "A" goes from "1" to "0" (FALLING)
+    and reads pin "B" value
 
-    NOTE: - always call this function before readPosition()
+    NOTE: - always call this function before getPosition()
           - this function must take no parameters and return nothing
-            if used with Interrupt
 */
 /**************************************************************************/
-void RotaryEncoder::updateA()
+void RotaryEncoder::readAB()
 {
-  //noInterrupts();                       //disable interrupts, same as "cli()"
-  _currValueA = digitalRead(_encoderA);
-  //interrupts();                         //enable interrupts, same as "sei()"
-}
-
-/**************************************************************************/
-/*
-    updateB()
-
-    Reads B values
-
-    NOTE: - always call this function before readPosition()
-          - this function must take no parameters and return nothing
-            if used with Interrupt
-*/
-/**************************************************************************/
-void RotaryEncoder::updateB()
-{
+  //noInterrupts();                     //disable interrupts, same as "cli()"
   _currValueB = digitalRead(_encoderB);
+  //interrupts();                       //enable interrupts, same as "sei()"
 }
 
 /**************************************************************************/
 /*
-    updatePB()
+    readPushButton()
 
     Reads push button value
 
-    NOTE: - always call this function before readPushButton()
+    NOTE: - always call this function before getPushButton()
           - this function must take no parameters and return nothing
             if used with Interrupt
 */
 /**************************************************************************/
-void RotaryEncoder::updatePB()
+void RotaryEncoder::readPushButton()
 {
   _buttonState = digitalRead(_encoderButton);
   //_buttonState = !_buttonState;
@@ -131,54 +115,36 @@ void RotaryEncoder::updatePB()
 
 /**************************************************************************/
 /*
-    readPosition()
+    getPosition()
 
     Return encoder position
 */
 /**************************************************************************/
-int16_t RotaryEncoder::readPosition()
+int16_t RotaryEncoder::getPosition()
 {
-  uint8_t direction = 0;
-
-  /* direction = cw << 1 | ccw */
-  direction  = ((_prevValueA ^ _currValueB) & ~(_prevValueB ^ _currValueA)) << 1 | (_prevValueB ^ _currValueA) & ~(_prevValueA ^ _currValueB);
-
-  _prevValueA = _currValueA;
-  _prevValueB = _currValueB;
-
-  switch (direction)
+  switch (_currValueB)
   {
-    case 0x02:
-      _tickCounter++;     
+    case CW:
+      _counter++;     
       break;
-    case 0x01:
-      _tickCounter--;
+    case CCW:
+      _counter--;
       break;
   }
 
-  switch (_tickCounter)
-  {
-    case  ROTARY_ENCODER_LATCH:
-      _latchCounter += 1;
-      _tickCounter   = 0;
-      break;
-    case ~ROTARY_ENCODER_LATCH:
-      _latchCounter -= 1;
-      _tickCounter   = 0;
-      break;
-  }
+  _currValueB = STOP;
 
-  return _latchCounter;
+  return _counter;
 }
 
 /**************************************************************************/
 /*
-    readPushButton()
+    getPushButton()
 
     Return encoder button state
 */
 /**************************************************************************/
-bool RotaryEncoder::readPushButton()
+bool RotaryEncoder::getPushButton()
 {
   return _buttonState;
 }
@@ -192,7 +158,7 @@ bool RotaryEncoder::readPushButton()
 /**************************************************************************/
 void RotaryEncoder::setPosition(int16_t position)
 {
-  _latchCounter = position;
+  _counter = position;
 }
 
 /**************************************************************************/
