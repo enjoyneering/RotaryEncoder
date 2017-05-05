@@ -65,9 +65,9 @@
  #include <pgmspace.h>
 #endif
 
-#define CW   0x00
-#define CCW  0x01
-#define STOP 0x02
+#define ROTARY_ENCODER_CW   0x00
+#define ROTARY_ENCODER_CCW  0x01
+#define ROTARY_ENCODER_STOP 0x02
 
 class RotaryEncoder
 {
