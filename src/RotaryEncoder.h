@@ -89,10 +89,10 @@ class RotaryEncoder
              uint8_t _encoderB;
              uint8_t _encoderButton;
 
-    volatile uint8_t _currValueB   = 0;
-    volatile bool    _buttonState  = true; //INPUT_PULLUP is ON
+    volatile uint8_t _currValueB  = ROTARY_ENCODER_STOP;
+    volatile bool    _buttonState = true;                //INPUT_PULLUP is ON
 
-             int16_t _counter      = -1;
+             int16_t _counter     = 0;
 };
 
 #endif
