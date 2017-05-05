@@ -124,15 +124,14 @@ int16_t RotaryEncoder::getPosition()
 {
   switch (_currValueB)
   {
-    case CW:
+    case ROTARY_ENCODER_CW:
       _counter++;     
       break;
-    case CCW:
+    case ROTARY_ENCODER_CCW:
       _counter--;
       break;
   }
-
-  _currValueB = STOP;
+  _currValueB = ROTARY_ENCODER_STOP;
 
   return _counter;
 }
