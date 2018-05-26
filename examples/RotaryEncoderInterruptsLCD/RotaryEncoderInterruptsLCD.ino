@@ -116,6 +116,9 @@ void loop()
   {
     lcd.setCursor(10, 1);
     lcd.print(buttonCounter++);
+
+    if   (buttonCounter % 4 == 0) lcd.noBacklight();
+    else                          lcd.backlight();
   }
 
   lcd.setCursor(10, 2);
