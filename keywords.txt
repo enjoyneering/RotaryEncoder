@@ -1,19 +1,27 @@
-###########################################
-# Syntax For RotaryEncoder
-#
-###########################################
-# Datatypes             (KEYWORD1)
-###########################################
+#######################################
+# Syntax Coloring Map RotaryEncoder
+#######################################
 
-RotaryEncoder            KEYWORD1
+#######################################
+# Datatypes		(KEYWORD1)
+#######################################
 
-###########################################
+#######################################
 # Methods and Functions (KEYWORD2)
-###########################################
-begin                    KEYWORD2
-readAB                   KEYWORD2
-readPushButton           KEYWORD2
-getPosition              KEYWORD2
-getPushButton            KEYWORD2
-setPosition              KEYWORD2
-setPushButton            KEYWORD2
+#######################################
+
+begin			KEYWORD2
+readAB			KEYWORD2
+getPosition		KEYWORD2
+getPushButton		KEYWORD2
+setPosition		KEYWORD2
+setPushButton		KEYWORD2
+
+#######################################
+# Instances		(KEYWORD2)
+#######################################
+RotaryEncoder		KEYWORD1
+
+#######################################
+# Constants		(LITERAL1)
+#######################################
