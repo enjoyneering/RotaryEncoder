@@ -99,8 +99,8 @@ class RotaryEncoder
              uint8_t _encoderB;           //pin "B"
              uint8_t _encoderButton;      //pin "button"
 
-    volatile uint8_t _prevValueAB = 0;    //previouse state of "A"+"B", "volatile" prevent compiler to make optimization/unnecessary changes in the code with the variable
-    volatile uint8_t _currValueAB = 0;    //current   state of "A"+"B"
+    volatile uint8_t _prevValueAB = 0;    //previous state of "A"+"B", "volatile" prevent compiler to make optimization/unnecessary changes in the code with the variable
+    volatile uint8_t _currValueAB = 0;    //current  state of "A"+"B"
     volatile int16_t _counter     = 0;    //encoder click counter
     volatile bool    _buttonState = true; //encoder button idle status, "true" because internal pull-up resistor is enabled
 };
