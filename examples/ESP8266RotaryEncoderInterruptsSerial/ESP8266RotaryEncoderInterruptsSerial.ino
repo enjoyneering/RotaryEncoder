@@ -35,8 +35,8 @@
 #include <RotaryEncoder.h>
 #include <ESP8266WiFi.h>
 
-#define PIN_A      D5 //ky-040 clk pin, interrupt
-#define PIN_B      D6 //ky-040 dt  pin
+#define PIN_A      D5 //ky-040 clk pin, interrupt, add 100nF/0.1uF capacitors between pin & ground
+#define PIN_B      D6 //ky-040 dt  pin,            add 100nF/0.1uF capacitors between pin & ground
 #define BUTTON     D7 //ky-040 sw  pin, interrupt
 
 int16_t position = 0;
