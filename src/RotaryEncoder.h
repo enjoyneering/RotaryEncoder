@@ -21,7 +21,8 @@
   ESP8266 Core - https://github.com/esp8266/Arduino
   STM32   Core - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
-  NOTE: - Quadrature encoder makes two waveforms that are 90 deg. out of phase:
+  NOTE:
+  - Quadrature encoder makes two waveforms that are 90 deg. out of phase:
                            _______         _______         __
                   PinA ___|       |_______|       |_______|   PinA
           CCW <--              _______         _______
@@ -54,8 +55,9 @@
             11         10            1110          1     CW,  0x0E
             11         11            1111          0     stop/idle
 
-        - CW  states 0b0001, 0b0111, 0b1000, 0b1110
-        - CСW states 0b0010, 0b0100, 0b1011, 0b1101
+   - CW  states 0b0001, 0b0111, 0b1000, 0b1110
+   - CСW states 0b0010, 0b0100, 0b1011, 0b1101
+   - for best result add 100nF/0.1uF capacitors between A & B channel pin & ground
 
   GNU GPL license, all text above must be included in any redistribution, see link below for details:
   - https://www.gnu.org/licenses/licenses.html
@@ -99,10 +101,10 @@ class RotaryEncoder
              uint8_t _encoderB;           //pin "B"
              uint8_t _encoderButton;      //pin "button"
 
-    volatile uint8_t _prevValueAB = 0;    //previous state of "A"+"B", "volatile" prevent compiler to make optimization/unnecessary changes in the code with the variable
-    volatile uint8_t _currValueAB = 0;    //current  state of "A"+"B"
+    volatile uint8_t _prevValueAB = 0;    //previouse state of "A"+"B", "volatile" prevent compiler to make optimization/unnecessary changes in the code with the variable
+    volatile uint8_t _currValueAB = 0;    //current   state of "A"+"B"
     volatile int16_t _counter     = 0;    //encoder click counter
-    volatile bool    _buttonState = true; //encoder button idle status, "true" because internal pull-up resistor is enabled
+    volatile bool    _buttonState = true; //encoder button status, "true" = not presses because internal pull-up resistor is enabled
 };
 
 #endif
