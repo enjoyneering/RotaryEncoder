@@ -32,7 +32,6 @@
   Arduino STM32 Core    - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
   NOTE:
-  - for best result add 100nF/0.1uF capacitors between each channel pin & ground
   - LOW     interrupt trigges whenever the pin is low
   - HIGH    interrupt triggers whenever the pin is high (Arduino Due, Zero, MKR1000 only)
   - CHANGE  interrupt triggers whenever the pin changes value
