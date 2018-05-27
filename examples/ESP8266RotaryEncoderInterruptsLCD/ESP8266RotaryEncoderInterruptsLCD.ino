@@ -32,6 +32,7 @@
   Arduino STM32 Core    - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
   NOTE:
+  - for best result add 100nF/0.1uF capacitors between each channel pin & ground
   - LOW     interrupt trigges whenever the pin is low
   - HIGH    interrupt triggers whenever the pin is high (Arduino Due, Zero, MKR1000 only)
   - CHANGE  interrupt triggers whenever the pin changes value
@@ -52,8 +53,8 @@
 
 #define LCD_SPACE_SYMBOL 0x20  //space symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 
-#define PIN_A            D5    //ky-040 clk pin, interrupt
-#define PIN_B            D6    //ky-040 dt  pin
+#define PIN_A            D5    //ky-040 clk pin, interrupt, add 100nF/0.1uF capacitors between pin & ground
+#define PIN_B            D6    //ky-040 dt  pin,            add 100nF/0.1uF capacitors between pin & ground
 #define BUTTON           D7    //ky-040 sw  pin, interrupt
 
 uint16_t buttonCounter = 0;
