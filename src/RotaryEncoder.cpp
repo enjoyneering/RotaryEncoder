@@ -21,7 +21,8 @@
   ESP8266 Core - https://github.com/esp8266/Arduino
   STM32   Core - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
-  NOTE: - Quadrature encoder makes two waveforms that are 90 deg. out of phase:
+  NOTE:
+  - Quadrature encoder makes two waveforms that are 90 deg. out of phase:
                            _______         _______         __
                   PinA ___|       |_______|       |_______|   PinA
           CCW <--              _______         _______
@@ -54,8 +55,9 @@
             11         10            1110          1     CW,  0x0E
             11         11            1111          0     stop/idle
 
-        - CW  states 0b0001, 0b0111, 0b1000, 0b1110
-        - CСW states 0b0010, 0b0100, 0b1011, 0b1101
+   - CW  states 0b0001, 0b0111, 0b1000, 0b1110
+   - CСW states 0b0010, 0b0100, 0b1011, 0b1101
+   - for best result add 100nF/0.1uF capacitors between A & B channel pin & ground
 
   GNU GPL license, all text above must be included in any redistribution, see link below for details:
   - https://www.gnu.org/licenses/licenses.html
@@ -115,29 +117,34 @@ void RotaryEncoder::begin()
     - declare all global variables inside ISR as "volatile". It prevent
       compiler to make any optimization/unnecessary changes in the code with
       the variable
+    - for best result add 100nF/0.1uF capacitors between A & B channel pin
+      & ground
 */
 /**************************************************************************/
 void RotaryEncoder::readAB()
 {
-  noInterrupts();                                       //disable interrupts
+  noInterrupts();                                         //disable interrupts
 
   _currValueAB  = digitalRead(_encoderA) << 1;
   _currValueAB |= digitalRead(_encoderB);
 
+
   switch ((_prevValueAB | _currValueAB))
   {
-    case 0b0001: case 0b0111: case 0b1000: case 0b1110: //CW states
+    //case 0b0001: case 0b0111: case 0b1000: case 0b1110: //CW states, half steps counter
+    case 0b0001: case 0b1110:                             //CW states, skip half steps counter
       _counter++;
       break;
 
-    case 0b0010: case 0b0100: case 0b1011: case 0b1101: //CCW states
+    //case 0b0010: case 0b0100: case 0b1011: case 0b1101: //CCW states, half steps counter
+    case 0b1011: case 0b0100:                             //CCW states, skip half steps counter
       _counter--;
       break;
   }
 
-  _prevValueAB = _currValueAB << 2;                     //update previouse state
+  _prevValueAB = _currValueAB << 2;                       //update previouse state
 
-  interrupts();                                         //enable interrupts
+  interrupts();                                           //enable interrupts
 }
 
 /**************************************************************************/
@@ -151,6 +158,8 @@ void RotaryEncoder::readAB()
       ISR called when push button pin changes from "1" to "0"
     - always call this function before getPushButton()
     - this function must take no parameters & return nothing if used with ISR
+    - for best result add 100nF/0.1uF capacitors between button pin
+      & ground
 */
 /**************************************************************************/
 void RotaryEncoder::readPushButton()
