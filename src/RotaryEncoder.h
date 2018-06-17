@@ -13,10 +13,11 @@
   Digistump, Trinket, ATtiny85............. 2/physical pin no.7
   Due...................................... all digital pins
   Zero..................................... all digital pins, except pin 4
-  Arduino STM32,STM32F103xxxx boards....... all digital pins, maximun 16 pins at the same time
+  Blue Pill, STM32F103xxxx boards.......... all digital pins, maximun 16 pins at the same time
   ESP8266.................................. all digital pins, except gpio6 - gpio11 & gpio16
 
-  Frameworks:
+  Frameworks & libraries:
+  TimerOne AVR - https://github.com/PaulStoffregen/TimerOne
   ATtiny  Core - https://github.com/SpenceKonde/ATTinyCore 
   ESP8266 Core - https://github.com/esp8266/Arduino
   STM32   Core - https://github.com/rogerclarkmelbourne/Arduino_STM32
@@ -55,9 +56,8 @@
             11         10            1110          1     CW,  0x0E
             11         11            1111          0     stop/idle
 
-   - CW  states 0b0001, 0b0111, 0b1000, 0b1110
-   - CСW states 0b0010, 0b0100, 0b1011, 0b1101
-   - for best result add 100nF/0.1uF capacitors between A & B channel pin & ground
+        - CW  states 0b0001, 0b0111, 0b1000, 0b1110
+        - CСW states 0b0010, 0b0100, 0b1011, 0b1101
 
   GNU GPL license, all text above must be included in any redistribution, see link below for details:
   - https://www.gnu.org/licenses/licenses.html
@@ -67,17 +67,17 @@
 #define RotaryEncoder_h
 
 #if defined(ARDUINO) && ARDUINO >= 100 //arduino core v1.0 or later
-  #include <Arduino.h>
+#include <Arduino.h>
 #else
-  #include <WProgram.h>
+#include <WProgram.h>
 #endif
 
 #if defined(__AVR__)
-  #include <avr/pgmspace.h>            //use for PROGMEM Arduino AVR
+#include <avr/pgmspace.h>              //use for PROGMEM Arduino AVR
 #elif defined(ESP8266)
-  #include <pgmspace.h>                //use for PROGMEM Arduino ESP8266
+#include <pgmspace.h>                  //use for PROGMEM Arduino ESP8266
 #elif defined(_VARIANT_ARDUINO_STM32_)
-  #include <avr/pgmspace.h>            //use for PROGMEM Arduino STM32
+#include <avr/pgmspace.h>              //use for PROGMEM Arduino STM32
 #endif
 
 
@@ -104,7 +104,7 @@ class RotaryEncoder
     volatile uint8_t _prevValueAB = 0;    //previouse state of "A"+"B", "volatile" prevent compiler to make optimization/unnecessary changes in the code with the variable
     volatile uint8_t _currValueAB = 0;    //current   state of "A"+"B"
     volatile int16_t _counter     = 0;    //encoder click counter
-    volatile bool    _buttonState = true; //encoder button status, "true" = not presses because internal pull-up resistor is enabled
+    volatile bool    _buttonState = true; //encoder button idle status, "true" because internal pull-up resistor is enabled
 };
 
 #endif
