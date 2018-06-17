@@ -46,7 +46,7 @@
   - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
-#pragma GCC optimize ("O2")    //code optimisation controls - "O2" & "O3" code performance, "Os" code size
+#pragma GCC optimize ("Os")    //code optimisation controls - "O2" & "O3" code performance, "Os" code size
 
 #include <Wire.h>
 #include <TimerOne.h>          //https://github.com/PaulStoffregen/TimerOne
