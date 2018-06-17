@@ -13,10 +13,11 @@
   Digistump, Trinket, ATtiny85............. 2/physical pin no.7
   Due...................................... all digital pins
   Zero..................................... all digital pins, except pin 4
-  Arduino STM32,STM32F103xxxx boards....... all digital pins, maximun 16 pins at the same time
+  Blue Pill, STM32F103xxxx boards.......... all digital pins, maximun 16 pins at the same time
   ESP8266.................................. all digital pins, except gpio6 - gpio11 & gpio16
 
-  Frameworks:
+  Frameworks & libraries:
+  TimerOne AVR - https://github.com/PaulStoffregen/TimerOne
   ATtiny  Core - https://github.com/SpenceKonde/ATTinyCore 
   ESP8266 Core - https://github.com/esp8266/Arduino
   STM32   Core - https://github.com/rogerclarkmelbourne/Arduino_STM32
@@ -109,8 +110,10 @@ void RotaryEncoder::begin()
     Reads "A" & "B" pins value
 
     NOTE:
-    - designed to use with Interrupt Service Routine with "CHANGE" parameter.
-      ISR called when pin "A" changes from "1" to "0" or from "0" to "1"
+    - for fast MCU designed to use with Interrupt Service Routine with
+      "CHANGE" parameter. ISR called when pin "A" changes from "1" to "0"
+      or from "0" to "1"
+    - for slow MCU use TimerOne interrupt & library
     - always call this function before getPosition()
     - this function must take no parameters & return nothing if used with ISR
     - delay() doesn't work during ISR & millis() doesn't increment
@@ -123,28 +126,33 @@ void RotaryEncoder::begin()
 /**************************************************************************/
 void RotaryEncoder::readAB()
 {
-  noInterrupts();                                         //disable interrupts
+  noInterrupts();                              //disable interrupts
 
   _currValueAB  = digitalRead(_encoderA) << 1;
   _currValueAB |= digitalRead(_encoderB);
 
-
   switch ((_prevValueAB | _currValueAB))
   {
-    //case 0b0001: case 0b0111: case 0b1000: case 0b1110: //CW states, half steps counter
-    case 0b0001: case 0b1110:                             //CW states, skip half steps counter
+    #if defined(__AVR__)                       //slow MCU
+    case 0b0001:                               //CW states for 1 count  per click, use "case 0b0001: case 0b1110:" for CW states for 2 counts per click
+    #else                                      //fast MCU
+    case 0b0001: case 0b1110:                  //CW states for 1 count  per click, use "case 0b0001: case 0b1110: case 0b1000: case 0b0111:" for CW states for 2 counts per click
+    #endif
       _counter++;
       break;
 
-    //case 0b0010: case 0b0100: case 0b1011: case 0b1101: //CCW states, half steps counter
-    case 0b1011: case 0b0100:                             //CCW states, skip half steps counter
+    #if defined(__AVR__)
+    case 0b0100:                               //CCW states for 1 count  per click, use case 0b0100: case 0b1011:
+    #else
+    case 0b0100: case 0b1011:                  //CCW states for 1 count  per click, use "case case 0b0100: case 0b1011: case 0b0010: case 0b1101:" for CCW states for 2 counts per click
+    #endif
       _counter--;
       break;
   }
 
-  _prevValueAB = _currValueAB << 2;                       //update previouse state
+  _prevValueAB = _currValueAB << 2;            //update previouse state
 
-  interrupts();                                           //enable interrupts
+  interrupts();                                //enable interrupts
 }
 
 /**************************************************************************/
@@ -165,7 +173,9 @@ void RotaryEncoder::readAB()
 void RotaryEncoder::readPushButton()
 {
   noInterrupts();                             //disable interrupts
-  _buttonState = digitalRead(_encoderButton); //LOW = pressed & HIGH = not presses, because internal pull-up resistor is enabled
+
+  _buttonState = digitalRead(_encoderButton); //LOW = pressed & HIGH = not pressed, because internal pull-up resistor is enabled
+
   interrupts();                               //enable interrupts
 }
 
@@ -188,8 +198,8 @@ int16_t RotaryEncoder::getPosition()
     Return encoder button state
 
     NOTE:
-    - returns "true"  if button is pressed
-    - returns "false" if button is not presses
+    - "true"  button is pressed
+    - "false" button is not presses
 */
 /**************************************************************************/
 bool RotaryEncoder::getPushButton()
@@ -207,7 +217,7 @@ bool RotaryEncoder::getPushButton()
 /*
     setPosition()
 
-    Manualy sets new encoder position
+    Manualy sets encoder position
 */
 /**************************************************************************/
 void RotaryEncoder::setPosition(int16_t position)
@@ -219,10 +229,14 @@ void RotaryEncoder::setPosition(int16_t position)
 /*
     setPushButton()
 
-    Manualy sets new encoder push button state
+    Manualy sets encoder push button state
+
+    NOTE:
+    - "true" buttorn  is pressed
+    - "false" buttorn is not pressed
 */
 /**************************************************************************/
 void RotaryEncoder::setPushButton(bool state)
 {
-  _buttonState = !state; //true = LOW/pressed & false = HIGH/not presses, because internal pull-up resistor is enabled
+  _buttonState = !state;
 }
