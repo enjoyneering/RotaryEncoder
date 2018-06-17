@@ -35,9 +35,9 @@
 /***************************************************************************************************/
 #include <RotaryEncoder.h>
 
-#define PIN_A   B13 //ky-040 clk pin, add 100nF/0.1uF capacitors between pin & ground
-#define PIN_B   B14 //ky-040 dt  pin, add 100nF/0.1uF capacitors between pin & ground
-#define BUTTON  B15 //ky-040 sw  pin
+#define PIN_A   PB13 //ky-040 clk pin, add 100nF/0.1uF capacitors between pin & ground
+#define PIN_B   PB14 //ky-040 dt  pin, add 100nF/0.1uF capacitors between pin & ground
+#define BUTTON  PB15 //ky-040 sw  pin
 
 int16_t position = 0;
 
