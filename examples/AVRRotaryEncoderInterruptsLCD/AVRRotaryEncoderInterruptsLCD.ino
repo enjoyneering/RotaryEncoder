@@ -58,8 +58,8 @@
 
 #define LCD_SPACE_SYMBOL 0x20  //space symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 
-#define PIN_A            2     //ky-040 clk pin, interrupt, add 100nF/0.1uF capacitors between pin & ground
-#define PIN_B            4     //ky-040 dt  pin,            add 100nF/0.1uF capacitors between pin & ground
+#define PIN_A            5     //ky-040 clk pin, add 100nF/0.1uF capacitors between pin & ground
+#define PIN_B            4     //ky-040 dt  pin, add 100nF/0.1uF capacitors between pin & ground
 #define BUTTON           3     //ky-040 sw  pin, interrupt
 
 uint16_t buttonCounter = 0;
