@@ -36,8 +36,8 @@
 #include <TimerOne.h>      //https://github.com/PaulStoffregen/TimerOne
 #include <RotaryEncoder.h>
 
-#define PIN_A   2 //ky-040 clk pin, interrupt, add 100nF/0.1uF capacitors between pin & ground
-#define PIN_B   4 //ky-040 dt  pin,            add 100nF/0.1uF capacitors between pin & ground
+#define PIN_A   5 //ky-040 clk pin, add 100nF/0.1uF capacitors between pin & ground
+#define PIN_B   4 //ky-040 dt  pin, add 100nF/0.1uF capacitors between pin & ground
 #define BUTTON  3 //ky-040 sw  pin, interrupt
 
 int16_t position = 0;
