@@ -17,10 +17,14 @@ getPushButton		KEYWORD2
 setPosition		KEYWORD2
 setPushButton		KEYWORD2
 
+getValue		KEYWORD2
+setValue		KEYWORD2
+
 #######################################
 # Instances		(KEYWORD2)
 #######################################
 RotaryEncoder		KEYWORD1
+RotaryEncoderAdvanced	KEYWORD2
 
 #######################################
 # Constants		(LITERAL1)
