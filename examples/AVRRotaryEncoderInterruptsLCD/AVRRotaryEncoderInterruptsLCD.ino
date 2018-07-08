@@ -22,12 +22,12 @@
   Mega2560, Due............................ 20                     21
   Leonardo, Micro, ATmega32U4.............. 2                      3
   Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7
-  Blue Pill, STM32F103xxxx boards.......... B7*                    B6*
+  Blue Pill, STM32F103xxxx boards.......... PB7*                   PB6*
   ESP8266 ESP-01:.......................... GPIO0/D5               GPIO2/D3
   NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1
 
-                                            *STM32F103xxxx pins B7/B7 are 5v tolerant, but bi-directional
-                                             logic level converter is recommended
+                                           *STM32F103xxxx pins PB6/PB7 are 5v tolerant, but
+                                            bi-directional logic level converter is recommended
 
   Frameworks & libraries:
   TimerOne AVR - https://github.com/PaulStoffregen/TimerOne
