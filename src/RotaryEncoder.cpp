@@ -141,10 +141,10 @@ void RotaryEncoder::readAB()
       _counter++;
       break;
 
-    #if defined(__AVR__)
+    #if defined(__AVR__)                       //slow MCU
     case 0b0100:                               //CCW states for 1 count  per click, use case 0b0100: case 0b1011:
-    #else
-    case 0b0100: case 0b1011:                  //CCW states for 1 count  per click, use "case case 0b0100: case 0b1011: case 0b0010: case 0b1101:" for CCW states for 2 counts per click
+    #else                                      //fast MCU
+    case 0b0100: case 0b1011:                  //CCW states for 1 count  per click, use "case 0b0100: case 0b1011: case 0b0010: case 0b1101:" for CCW states for 2 counts per click
     #endif
       _counter--;
       break;
