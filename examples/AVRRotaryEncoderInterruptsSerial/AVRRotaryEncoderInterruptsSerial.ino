@@ -5,7 +5,7 @@
   written by : enjoyneering79
   sourse code: https://github.com/enjoyneering/
 
-  This library uses interrupts, specials pins are required to interface
+  This sketch uses interrupts, specials pins are required to interface
   Board:                                    int.0  int.1  int.2  int.3  int.4  int.5
   Uno, Mini, Pro, ATmega168, ATmega328..... 2      3      x       x      x     x
   Mega2560................................. 2      3      21      20     19    18
@@ -15,6 +15,19 @@
   Zero..................................... all digital pins, except pin 4
   Blue Pill, STM32F103xxxx boards.......... all digital pins, maximun 16 pins at the same time
   ESP8266.................................. all digital pins, except gpio6 - gpio11 & gpio16
+
+  PCF8574 chip uses I2C bus to communicate, specials pins are required to interface
+  Board:                                    SDA                    SCL
+  Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5
+  Mega2560, Due............................ 20                     21
+  Leonardo, Micro, ATmega32U4.............. 2                      3
+  Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7
+  Blue Pill, STM32F103xxxx boards.......... PB7*                   PB6*
+  ESP8266 ESP-01:.......................... GPIO0/D5               GPIO2/D3
+  NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1
+
+                                           *STM32F103xxxx pins PB6/PB7 are 5v tolerant, but
+                                            bi-directional logic level converter is recommended
 
   Frameworks & libraries:
   TimerOne AVR - https://github.com/PaulStoffregen/TimerOne
