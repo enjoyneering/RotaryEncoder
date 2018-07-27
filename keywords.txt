@@ -12,6 +12,8 @@
 
 begin			KEYWORD2
 readAB			KEYWORD2
+readPushButton		KEYWORD2
+
 getPosition		KEYWORD2
 getPushButton		KEYWORD2
 setPosition		KEYWORD2
@@ -23,7 +25,8 @@ setValue		KEYWORD2
 #######################################
 # Instances		(KEYWORD2)
 #######################################
-RotaryEncoder		KEYWORD1
+
+RotaryEncoder		KEYWORD2
 RotaryEncoderAdvanced	KEYWORD2
 
 #######################################
