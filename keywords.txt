@@ -3,32 +3,32 @@
 #######################################
 
 #######################################
-# Datatypes		(KEYWORD1)
+# Datatypes	(KEYWORD1)
 #######################################
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-begin			KEYWORD2
-readAB			KEYWORD2
-readPushButton		KEYWORD2
+begin	KEYWORD2
+readAB	KEYWORD2
+readPushButton	KEYWORD2
 
-getPosition		KEYWORD2
-getPushButton		KEYWORD2
-setPosition		KEYWORD2
-setPushButton		KEYWORD2
+getPosition	KEYWORD2
+getPushButton	KEYWORD2
+setPosition	KEYWORD2
+setPushButton	KEYWORD2
 
-getValue		KEYWORD2
-setValue		KEYWORD2
+getValue	KEYWORD2
+setValue	KEYWORD2
 
 #######################################
-# Instances		(KEYWORD2)
+# Instances	(KEYWORD2)
 #######################################
 
-RotaryEncoder		KEYWORD2
+RotaryEncoder	KEYWORD2
 RotaryEncoderAdvanced	KEYWORD2
 
 #######################################
-# Constants		(LITERAL1)
+# Constants	(LITERAL1)
 #######################################
