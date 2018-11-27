@@ -22,6 +22,17 @@ setPushButton	KEYWORD2
 getValue	KEYWORD2
 setValue	KEYWORD2
 
+getStepsPerClick	KEYWORD2
+setStepsPerClick	KEYWORD2
+
+getMinValue	KEYWORD2
+setMinValue	KEYWORD2
+
+getMaxValue	KEYWORD2
+setMaxValue	KEYWORD2
+
+setValues	KEYWORD2
+
 #######################################
 # Instances	(KEYWORD2)
 #######################################
