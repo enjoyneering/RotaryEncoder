@@ -1,29 +1,24 @@
 /***************************************************************************************************/
 /*
-  This is an Arduino library for Quadrature Rotary Encoder 
+   This is an Arduino library for Quadrature Rotary Encoder 
 
-  written by : enjoyneering79
-  sourse code: https://github.com/enjoyneering/
+   written by : enjoyneering79
+   sourse code: https://github.com/enjoyneering/
 
-  This library uses interrupts, specials pins are required to interface
-  Board:                                    int.0  int.1  int.2  int.3  int.4  int.5
-  Uno, Mini, Pro, ATmega168, ATmega328..... 2      3      x       x      x     x
-  Mega2560................................. 2      3      21      20     19    18
-  Leonardo, Micro, ATmega32U4.............. 3      2      0       1      7     x
-  Digistump, Trinket, ATtiny85............. 2/physical pin no.7
-  Due...................................... all digital pins
-  Zero..................................... all digital pins, except pin 4
-  Blue Pill, STM32F103xxxx boards.......... all digital pins, maximun 16 pins at the same time
-  ESP8266.................................. all digital pins, except gpio6 - gpio11 & gpio16
+   This library uses interrupts, specials pins are required to interface
+   Board:                                    int.0  int.1  int.2  int.3  int.4  int.5            Level
+   Uno, Mini, Pro, ATmega168, ATmega328..... 2      3      x       x      x     x                5v
+   Mega2560................................. 2      3      21      20     19    18               5v
+   Leonardo, Micro, ATmega32U4.............. 3      2      0       1      7     x                5v
+   Digistump, Trinket, ATtiny85............. 2/physical pin 7                                    5v
+   Due, SAM3X8E............................. all digital pins                                    3v
+   Zero, ATSAMD21G18........................ all digital pins, except pin 4                      3v
+   Blue Pill, STM32F103xxxx boards.......... all digital pins, maximum 16 pins at the same time  3v
+   ESP8266.................................. all digital pins, except gpio6 - gpio11 & gpio16    3v/5v
+   ESP32.................................... all digital pins                                    3v
 
-  Frameworks & libraries:
-  TimerOne AVR - https://github.com/PaulStoffregen/TimerOne
-  ATtiny  Core - https://github.com/SpenceKonde/ATTinyCore 
-  ESP8266 Core - https://github.com/esp8266/Arduino
-  STM32   Core - https://github.com/rogerclarkmelbourne/Arduino_STM32
-
-  NOTE:
-  - Quadrature encoder makes two waveforms that are 90 deg. out of phase:
+   NOTE:
+   - Quadrature encoder makes two waveforms that are 90° out of phase:
                            _______         _______         __
                   PinA ___|       |_______|       |_______|   PinA
           CCW <--              _______         _______
@@ -56,12 +51,18 @@
             11         10            1110          1     CW,  0x0E
             11         11            1111          0     stop/idle
 
-   - CW  states 0b0001, 0b0111, 0b1000, 0b1110
-   - CСW states 0b0010, 0b0100, 0b1011, 0b1101
-   - for best result add 100nF/0.1uF capacitors between A & B channel pin & ground
+          - CW  states 0b0001, 0b0111, 0b1000, 0b1110
+          - CCW states 0b0010, 0b0100, 0b1011, 0b1101
 
-  GNU GPL license, all text above must be included in any redistribution, see link below for details:
-  - https://www.gnu.org/licenses/licenses.html
+   Frameworks & Libraries:
+   TimerOne AVR          - https://github.com/PaulStoffregen/TimerOne
+   ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
+   ESP32   Core          - https://github.com/espressif/arduino-esp32
+   ESP8266 Core          - https://github.com/esp8266/Arduino
+   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+
+   GNU GPL license, all text above must be included in any redistribution,
+   see link for details  - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
 
@@ -87,13 +88,11 @@ RotaryEncoder::RotaryEncoder(uint8_t encoderA, uint8_t encoderB, uint8_t encoder
     Sets encoders pins as input & enables built-in pullup resistors
 
     NOTE:
-    - high value of pull-up resistor can limit the speed
-    - typical value of external pull-up resistor is 10kOhm, minimum
-      value 5kOhm & maximum value 100kOhm
-    - for ESP8266 value of internal pull-up resistors is
-      between 30kOhm..100kOhm
-    - for AVR value of internal pull-up resistors is
-      between 30kOhm..60kOhm
+    - high value of pull-up resistor limits the speed
+    - typical value of external pull-up resistor is 10kOhm, acceptable
+      range 5kOhm..100kOhm
+    - for ESP8266 value of internal pull-up resistors is 30kOhm..100kOhm
+    - for AVR     value of internal pull-up resistors is 30kOhm..60kOhm
 */
 /**************************************************************************/
 void RotaryEncoder::begin()
@@ -110,49 +109,52 @@ void RotaryEncoder::begin()
     Reads "A" & "B" pins value
 
     NOTE:
-    - for fast MCU designed to use with Interrupt Service Routine with
-      "CHANGE" parameter. ISR called when pin "A" changes from "1" to "0"
-      or from "0" to "1"
-    - for slow MCU use TimerOne interrupt & library
     - always call this function before getPosition()
-    - this function must take no parameters & return nothing if used with ISR
+    - 100nF/0.1μF capacitors between A & B channel pin & ground is a must!!!
+    - for fast MCU like Cortex use Interrupt Service Routine with "CHANGE"
+      parameter, ISR called when pin "A" changes from "1" to "0"
+      or from "0" to "1"
+    - for slow MCU like 8-bit AVR use Timer1 interrupt & TimerOne library
+    - the ISR function must take no parameters & return nothing
     - delay() doesn't work during ISR & millis() doesn't increment
-    - declare all global variables inside ISR as "volatile". It prevent
-      compiler to make any optimization/unnecessary changes in the code with
-      the variable
-    - for best result add 100nF/0.1uF capacitors between A & B channel pin
-      & ground
+    - declare all global variables inside ISR as "volatile", it prevent
+      compiler to make any optimization & unnecessary changes in the code
+      with the variable
 */
 /**************************************************************************/
 void RotaryEncoder::readAB()
 {
-  noInterrupts();                              //disable interrupts
+  noInterrupts();                                       //disable interrupts
 
   _currValueAB  = digitalRead(_encoderA) << 1;
   _currValueAB |= digitalRead(_encoderB);
 
   switch ((_prevValueAB | _currValueAB))
   {
-    #if defined(__AVR__)                       //slow MCU
-    case 0b0001:                               //CW states for 1 count  per click, use "case 0b0001: case 0b1110:" for CW states for 2 counts per click
-    #else                                      //fast MCU
-    case 0b0001: case 0b1110:                  //CW states for 1 count  per click, use "case 0b0001: case 0b1110: case 0b1000: case 0b0111:" for CW states for 2 counts per click
+    #if defined(__AVR__)                                //slow MCU
+    case 0b0001:                                        //CW states, 1 count  per click
+  //case 0b0001: case 0b1110:                           //CW states, 2 counts per click
+    #else                                               //fast MCU
+    case 0b0001: case 0b1110:                           //CW states, 1 count  per click
+  //case 0b0001: case 0b1110: case 0b1000: case 0b0111: //CW states, 2 counts per click
     #endif
       _counter++;
       break;
 
-    #if defined(__AVR__)                       //slow MCU
-    case 0b0100:                               //CCW states for 1 count  per click, use case 0b0100: case 0b1011:
-    #else                                      //fast MCU
-    case 0b0100: case 0b1011:                  //CCW states for 1 count  per click, use "case 0b0100: case 0b1011: case 0b0010: case 0b1101:" for CCW states for 2 counts per click
+    #if defined(__AVR__)                                //slow MCU
+    case 0b0100:                                        //CCW states, 1 count  per click
+  //case 0b0100: case 0b1011:                           //CCW states, 2 count  per click
+    #else                                               //fast MCU
+    case 0b0100: case 0b1011:                           //CCW states, 1 count  per click
+  //case 0b0100: case 0b1011: case 0b0010: case 0b1101: //CCW states, 2 counts per click
     #endif
       _counter--;
       break;
   }
 
-  _prevValueAB = _currValueAB << 2;            //update previouse state
+  _prevValueAB = _currValueAB << 2;                     //update previouse state
 
-  interrupts();                                //enable interrupts
+  interrupts();                                         //enable interrupts
 }
 
 /**************************************************************************/
@@ -162,19 +164,23 @@ void RotaryEncoder::readAB()
     Reads push button value
 
     NOTE:
-    - designed to use with Interrupt Service Routine with "FALLING" parameter.
-      ISR called when push button pin changes from "1" to "0"
     - always call this function before getPushButton()
-    - this function must take no parameters & return nothing if used with ISR
-    - for best result add 100nF/0.1uF capacitors between button pin
-      & ground
+    - add 100nF/0.1μF capacitors between button pin & ground to
+      reduce bounce!!!
+    - designed to use with Interrupt Service Routine with "FALLING"
+      parameter, ISR called when push button pin changes from "1" to "0"
+    - the ISR function must take no parameters & return nothing
+    - delay() doesn't work during ISR & millis() doesn't increment
+    - declare all global variables inside ISR as "volatile", it prevent
+      compiler to make any optimization & unnecessary changes in the code
+      with the variable
 */
 /**************************************************************************/
 void RotaryEncoder::readPushButton()
 {
   noInterrupts();                             //disable interrupts
 
-  _buttonState = digitalRead(_encoderButton); //LOW = pressed & HIGH = not pressed, because internal pull-up resistor is enabled
+  _buttonState = digitalRead(_encoderButton); //HIGH not pressed & LOW pressed, because internal pull-up resistor is enabled
 
   interrupts();                               //enable interrupts
 }
@@ -198,19 +204,14 @@ int16_t RotaryEncoder::getPosition()
     Return encoder button state
 
     NOTE:
-    - "true"  button is pressed
-    - "false" button is not presses
+    - convert "HIGH" to "false" when button is not presses
+    - convert "LOW"  to "true"  when button is pressed
 */
 /**************************************************************************/
 bool RotaryEncoder::getPushButton()
 {
-  if ( _buttonState == LOW)       //button is pressed
-  {
-    _buttonState = !_buttonState; //clear state
-    return true;
-  }
-
-  return false;
+  if (_buttonState == HIGH) return false;               //button is not pressed
+                            return _buttonState = true; //button is     pressed
 }
 
 /**************************************************************************/
@@ -238,5 +239,5 @@ void RotaryEncoder::setPosition(int16_t position)
 /**************************************************************************/
 void RotaryEncoder::setPushButton(bool state)
 {
-  _buttonState = !state;
+  _buttonState = ~state;
 }
