@@ -1,29 +1,24 @@
 /***************************************************************************************************/
 /*
-  This is an Arduino library for Quadrature Rotary Encoder 
+   This is an Arduino library for Quadrature Rotary Encoder 
 
-  written by : enjoyneering79
-  sourse code: https://github.com/enjoyneering/
+   written by : enjoyneering79
+   sourse code: https://github.com/enjoyneering/
 
-  This library uses interrupts, specials pins are required to interface
-  Board:                                    int.0  int.1  int.2  int.3  int.4  int.5
-  Uno, Mini, Pro, ATmega168, ATmega328..... 2      3      x       x      x     x
-  Mega2560................................. 2      3      21      20     19    18
-  Leonardo, Micro, ATmega32U4.............. 3      2      0       1      7     x
-  Digistump, Trinket, ATtiny85............. 2/physical pin no.7
-  Due...................................... all digital pins
-  Zero..................................... all digital pins, except pin 4
-  Blue Pill, STM32F103xxxx boards.......... all digital pins, maximun 16 pins at the same time
-  ESP8266.................................. all digital pins, except gpio6 - gpio11 & gpio16
+   This library uses interrupts, specials pins are required to interface
+   Board:                                    int.0  int.1  int.2  int.3  int.4  int.5            Level
+   Uno, Mini, Pro, ATmega168, ATmega328..... 2      3      x       x      x     x                5v
+   Mega2560................................. 2      3      21      20     19    18               5v
+   Leonardo, Micro, ATmega32U4.............. 3      2      0       1      7     x                5v
+   Digistump, Trinket, ATtiny85............. 2/physical pin 7                                    5v
+   Due, SAM3X8E............................. all digital pins                                    3v
+   Zero, ATSAMD21G18........................ all digital pins, except pin 4                      3v
+   Blue Pill, STM32F103xxxx boards.......... all digital pins, maximum 16 pins at the same time  3v
+   ESP8266.................................. all digital pins, except gpio6 - gpio11 & gpio16    3v/5v
+   ESP32.................................... all digital pins                                    3v
 
-  Frameworks & libraries:
-  TimerOne AVR - https://github.com/PaulStoffregen/TimerOne
-  ATtiny  Core - https://github.com/SpenceKonde/ATTinyCore 
-  ESP8266 Core - https://github.com/esp8266/Arduino
-  STM32   Core - https://github.com/rogerclarkmelbourne/Arduino_STM32
-
-  NOTE:
-  - Quadrature encoder makes two waveforms that are 90 deg. out of phase:
+   NOTE:
+   - Quadrature encoder makes two waveforms that are 90° out of phase:
                            _______         _______         __
                   PinA ___|       |_______|       |_______|   PinA
           CCW <--              _______         _______
@@ -56,28 +51,35 @@
             11         10            1110          1     CW,  0x0E
             11         11            1111          0     stop/idle
 
-        - CW  states 0b0001, 0b0111, 0b1000, 0b1110
-        - CСW states 0b0010, 0b0100, 0b1011, 0b1101
+          - CW  states 0b0001, 0b0111, 0b1000, 0b1110
+          - CCW states 0b0010, 0b0100, 0b1011, 0b1101
 
-  GNU GPL license, all text above must be included in any redistribution, see link below for details:
-  - https://www.gnu.org/licenses/licenses.html
+   Frameworks & Libraries:
+   TimerOne AVR          - https://github.com/PaulStoffregen/TimerOne
+   ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
+   ESP32   Core          - https://github.com/espressif/arduino-esp32
+   ESP8266 Core          - https://github.com/esp8266/Arduino
+   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+
+   GNU GPL license, all text above must be included in any redistribution,
+   see link for details  - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
 #ifndef RotaryEncoder_h
 #define RotaryEncoder_h
 
-#if defined(ARDUINO) && ARDUINO >= 100 //arduino core v1.0 or later
+#if defined(ARDUINO) && ((ARDUINO) >= 100) //arduino core v1.0 or later
 #include <Arduino.h>
 #else
 #include <WProgram.h>
 #endif
 
 #if defined(__AVR__)
-#include <avr/pgmspace.h>              //use for PROGMEM Arduino AVR
+#include <avr/pgmspace.h>                  //use for PROGMEM Arduino AVR
 #elif defined(ESP8266)
-#include <pgmspace.h>                  //use for PROGMEM Arduino ESP8266
+#include <pgmspace.h>                      //use for PROGMEM Arduino ESP8266
 #elif defined(_VARIANT_ARDUINO_STM32_)
-#include <avr/pgmspace.h>              //use for PROGMEM Arduino STM32
+#include <avr/pgmspace.h>                  //use for PROGMEM Arduino STM32
 #endif
 
 
@@ -86,24 +88,24 @@ class RotaryEncoder
   public:
     RotaryEncoder(uint8_t encoderA, uint8_t encoderB, uint8_t encoderButton);
 
-    void     begin(void);
-    void     readAB(void);
-    void     readPushButton(void);
+           void     begin(void);
+           void     readAB(void);
+           void     readPushButton(void);
 
-    int16_t  getPosition(void);
-    bool     getPushButton(void);
+    inline int16_t  getPosition(void);
+           bool     getPushButton(void);
 
-    void     setPosition(int16_t position);
-    void     setPushButton(bool state);
+    inline void     setPosition(int16_t position);
+    inline void     setPushButton(bool state);
 
   private:
              uint8_t _encoderA;           //pin "A"
              uint8_t _encoderB;           //pin "B"
              uint8_t _encoderButton;      //pin "button"
 
-    volatile uint8_t _prevValueAB = 0;    //previouse state of "A"+"B", "volatile" prevent compiler to make optimization/unnecessary changes in the code with the variable
+    volatile uint8_t _prevValueAB = 0;    //previouse state of "A"+"B"
     volatile uint8_t _currValueAB = 0;    //current   state of "A"+"B"
-    volatile bool    _buttonState = true; //encoder button idle status, "true" because internal pull-up resistor is enabled
+    volatile bool    _buttonState = true; //encoder button status, idle value is "true" because internal pull-up resistor is enabled
 
   protected:
     volatile int16_t _counter     = 0;    //encoder click counter, limits -32768..32767
