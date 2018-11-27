@@ -65,35 +65,51 @@
    see link for details  - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
-#ifndef RotaryEncoderAdvanced_h
-#define RotaryEncoderAdvanced_h
+#ifndef RotaryEncoder_h
+#define RotaryEncoder_h
 
-#include <RotaryEncoder.h>
+#if defined(ARDUINO) && ((ARDUINO) >= 100) //arduino core v1.0 or later
+#include <Arduino.h>
+#else
+#include <WProgram.h>
+#endif
+
+#if defined(__AVR__)
+#include <avr/pgmspace.h>                  //use for PROGMEM Arduino AVR
+#elif defined(ESP8266)
+#include <pgmspace.h>                      //use for PROGMEM Arduino ESP8266
+#elif defined(_VARIANT_ARDUINO_STM32_)
+#include <avr/pgmspace.h>                  //use for PROGMEM Arduino STM32
+#endif
 
 
-template <typename T> class RotaryEncoderAdvanced : public RotaryEncoder
+class RotaryEncoder
 {
   public:
-    RotaryEncoderAdvanced(uint8_t encoderA, uint8_t encoderB, uint8_t encoderButton, T stepsPerClick, T minValue, T maxValue);
+    RotaryEncoder(uint8_t encoderA, uint8_t encoderB, uint8_t encoderButton);
 
-           T    getValue(void);
-           void setValue(T value);
+           void     begin(void);
+           void     readAB(void);
+           void     readPushButton(void);
 
-    inline T    getStepsPerClick(void);
-    inline void setStepsPerClick(T value);
+    inline int16_t  getPosition(void);
+           bool     getPushButton(void);
 
-    inline T    getMinValue(void);
-    inline void setMinValue(T value);
-
-    inline T    getMaxValue(void);
-    inline void setMaxValue(T value);
-
-           void setValues(T currValue, T stepsPerClick, T minValue, T maxValue);
+    inline void     setPosition(int16_t position);
+    inline void     setPushButton(bool state);
 
   private:
-    T _stepsPerClick; //steps per click
-    T _minValue;      //min returned value
-    T _maxValue;      //max returned value
+             uint8_t _encoderA;           //pin "A"
+             uint8_t _encoderB;           //pin "B"
+             uint8_t _encoderButton;      //pin "button"
+
+    volatile uint8_t _prevValueAB = 0;    //previouse state of "A"+"B"
+    volatile uint8_t _currValueAB = 0;    //current   state of "A"+"B"
+    volatile bool    _buttonState = true; //encoder button status, idle value is "true" because internal pull-up resistor is enabled
+
+  protected:
+    volatile int16_t _counter     = 0;    //encoder click counter, limits -32768..32767
+
 };
 
 #endif
