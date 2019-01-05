@@ -1,9 +1,11 @@
+[![license-badge][]][license]
+
 # RotaryEncoder
-This is small and fast Arduino library for Rotary Encoder with interrupts
+This is small and fast Arduino library for Rotary Encoder with interrupts 
 
 To make it work:
-- add 100nF/0.1μF capacitors between A      pin & ground
-- add 100nF/0.1μF capacitors between B      pin & ground
+- add 100nF/0.1μF capacitors between A pin & ground
+- add 100nF/0.1μF capacitors between B pin & ground
 - add 100nF/0.1μF capacitors between button pin & ground
 
 Supports:
@@ -11,3 +13,6 @@ Supports:
 - Arduino ESP8266
 - Arduino ESP32
 - Arduino STM32
+
+[license]:       https://choosealicense.com/licenses/gpl-3.0/
+[license-badge]: https://img.shields.io/aur/license/yaourt.svg
