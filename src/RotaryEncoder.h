@@ -88,15 +88,15 @@ class RotaryEncoder
   public:
     RotaryEncoder(uint8_t encoderA, uint8_t encoderB, uint8_t encoderButton);
 
-           void     begin(void);
-           void     readAB(void);
-           void     readPushButton(void);
+    void     begin(void);
+    void     readAB(void);
+    void     readPushButton(void);
 
-    inline int16_t  getPosition(void);
-           bool     getPushButton(void);
+    int16_t  getPosition(void);
+    bool     getPushButton(void);
 
-    inline void     setPosition(int16_t position);
-    inline void     setPushButton(bool state);
+    void     setPosition(int16_t position);
+    void     setPushButton(bool state);
 
   private:
              uint8_t _encoderA;           //pin "A"
