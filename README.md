@@ -1,4 +1,4 @@
-[![license-badge][]][license]
+[![license-badge][]][license] ![version]
 
 # RotaryEncoder
 This is small and fast Arduino library for Rotary Encoder with interrupts 
@@ -16,3 +16,4 @@ Supports:
 
 [license]:       https://choosealicense.com/licenses/gpl-3.0/
 [license-badge]: https://img.shields.io/aur/license/yaourt.svg
+[version]:       https://img.shields.io/badge/Version-1.4.0-green.svg
