@@ -14,8 +14,10 @@ Supports:
 - Arduino ESP32
 - Arduino STM32
 
+[license-badge]: https://img.shields.io/badge/License-GPLv3-blue.svg
 [license]:       https://choosealicense.com/licenses/gpl-3.0/
-[license-badge]: https://img.shields.io/aur/license/yaourt.svg
 [version]:       https://img.shields.io/badge/Version-1.4.0-green.svg
 [stars]:         https://img.shields.io/github/stars/enjoyneering/RotaryEncoder.svg
 [stargazers]:    https://github.com/enjoyneering/RotaryEncoder/stargazers
+[GitHub issues]: https://img.shields.io/github/issues/enjoyneering/RotaryEncoder
+[issues]:        https://github.com/enjoyneering/RotaryEncoder/issues/
