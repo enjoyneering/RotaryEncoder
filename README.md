@@ -1,4 +1,4 @@
-[![license-badge][]][license] ![version] [![stars][]][stargazers]
+[![license-badge][]][license] ![version] [![stars][]][stargazers] [![GitHub issues][]][issues]
 
 # RotaryEncoder
 This is small and fast Arduino library for Rotary Encoder with interrupts 
