@@ -1,4 +1,4 @@
-[![license-badge][]][license] ![version] [![stars][]][stargazers] [![GitHub issues][]][issues]
+[![license-badge][]][license] ![version] [![stars][]][stargazers] [![github-issues][]][issues]
 
 # RotaryEncoder
 This is small and fast Arduino library for Rotary Encoder with interrupts 
@@ -19,5 +19,7 @@ Supports:
 [version]:       https://img.shields.io/badge/Version-1.4.0-green.svg
 [stars]:         https://img.shields.io/github/stars/enjoyneering/RotaryEncoder.svg
 [stargazers]:    https://github.com/enjoyneering/RotaryEncoder/stargazers
-[GitHub issues]: https://img.shields.io/github/issues/enjoyneering/RotaryEncoder.svg
+[hit-count]:     http://hits.dwyl.io/enjoyneering/RotaryEncoder.svg
+[count]:         http://hits.dwyl.io/enjoyneering/RotaryEncoder/badges
+[github-issues]: https://img.shields.io/github/issues/enjoyneering/RotaryEncoder.svg
 [issues]:        https://github.com/enjoyneering/RotaryEncoder/issues/
