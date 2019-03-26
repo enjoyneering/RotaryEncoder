@@ -19,5 +19,5 @@ Supports:
 [version]:       https://img.shields.io/badge/Version-1.4.0-green.svg
 [stars]:         https://img.shields.io/github/stars/enjoyneering/RotaryEncoder.svg
 [stargazers]:    https://github.com/enjoyneering/RotaryEncoder/stargazers
-[GitHub issues]: https://img.shields.io/github/issues/enjoyneering/RotaryEncoder
+[GitHub issues]: https://img.shields.io/github/issues/enjoyneering/RotaryEncoder.svg
 [issues]:        https://github.com/enjoyneering/RotaryEncoder/issues/
