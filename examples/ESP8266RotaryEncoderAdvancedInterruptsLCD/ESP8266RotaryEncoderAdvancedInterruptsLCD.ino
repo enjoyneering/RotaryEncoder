@@ -47,33 +47,32 @@
    see link for details  - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
-#include <Wire.h>                    //use bug free i2c driver https://github.com/enjoyneering/ESP8266-I2C-Driver
+#include <Wire.h>              //use bug free i2c driver https://github.com/enjoyneering/ESP8266-I2C-Driver
+#include <LiquidCrystal_I2C.h> //https://github.com/enjoyneering/LiquidCrystal_I2C
 #include <ESP8266WiFi.h>
-#include <LiquidCrystal_I2C.h>       //https://github.com/enjoyneering/LiquidCrystal_I2C
-#include <RotaryEncoderAdvanced.h>
-#include <RotaryEncoderAdvanced.cpp> //for some reason linker can't find the *.cpp :(
+#include <RotaryEncoder.h>
 
-#define LCD_ROWS         4           //quantity of lcd rows
-#define LCD_COLUMNS      20          //quantity of lcd columns
+#define LCD_ROWS         4     //quantity of lcd rows
+#define LCD_COLUMNS      20    //quantity of lcd columns
 
-#define LCD_SPACE_SYMBOL 0x20        //space symbol from lcd ROM, see p.9 of GDM2004D datasheet
+#define LCD_SPACE_SYMBOL 0x20  //space symbol from lcd ROM, see p.9 of GDM2004D datasheet
 
-#define PIN_A            D5          //ky-040 clk pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
-#define PIN_B            D6          //ky-040 dt  pin,             add 100nF/0.1uF capacitors between pin & ground!!!
-#define BUTTON           D7          //ky-040 sw  pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
+#define PIN_A            D5    //ky-040 clk pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
+#define PIN_B            D6    //ky-040 dt  pin,             add 100nF/0.1uF capacitors between pin & ground!!!
+#define BUTTON           D7    //ky-040 sw  pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
 
 uint16_t buttonCounter = 0;
 
-RotaryEncoderAdvanced<float> encoder(PIN_A, PIN_B, BUTTON, 0.1, 0.0, 3.3);                         //0.1 step per click, minimum value 0, maximum value 3.3
-LiquidCrystal_I2C            lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
+RotaryEncoder     encoder(PIN_A, PIN_B, BUTTON);
+LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 
 
-void encoderISR()
+void ICACHE_RAM_ATTR encoderISR()                                            //interrupt service routines need to be in ram
 {
   encoder.readAB();
 }
 
-void encoderButtonISR()
+void ICACHE_RAM_ATTR encoderButtonISR()
 {
   encoder.readPushButton();
 }
@@ -103,30 +102,30 @@ void setup()
   lcd.clear();
 
   /* prints static text */
-  lcd.print(F("VALUE :"));
+  lcd.print(F("POSITION:"));
   lcd.setCursor(0, 1);                                                       //set 1-st column, 2-nd row
-  lcd.print(F("BUTTON:"));
-  lcd.setCursor(8, 1);
+  lcd.print(F("BUTTON  :"));
+  lcd.setCursor(10, 1);
   lcd.print(buttonCounter);
   lcd.setCursor(0, 2);
-  lcd.print(F("UPTIME:"));
+  lcd.print(F("UPTIME  :"));
 }
 
 void loop()
 {
-  lcd.setCursor(8, 0);
-  lcd.print(encoder.getValue(), 1);
+  lcd.setCursor(10, 0);
+  lcd.print(encoder.getPosition());
   lcd.write(LCD_SPACE_SYMBOL);
 
   if (encoder.getPushButton() == true)
   {
-    lcd.setCursor(8, 1);
+    lcd.setCursor(10, 1);
     lcd.print(buttonCounter++);
 
     if   (buttonCounter % 4 == 0) lcd.noBacklight();                         //every 4-th button click backlight is off
     else                          lcd.backlight();
   }
 
-  lcd.setCursor(8, 2);
+  lcd.setCursor(10, 2);
   lcd.print((millis() / 1000));
 }
