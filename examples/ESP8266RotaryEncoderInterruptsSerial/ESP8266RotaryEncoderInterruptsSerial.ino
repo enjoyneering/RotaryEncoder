@@ -47,12 +47,12 @@ int16_t position = 0;
 RotaryEncoder encoder(PIN_A, PIN_B, BUTTON);
 
 
-void encoderISR()
+void ICACHE_RAM_ATTR encoderISR()                                            //interrupt service routines need to be in ram
 {
   encoder.readAB();
 }
 
-void encoderButtonISR()
+void ICACHE_RAM_ATTR encoderButtonISR()
 {
   encoder.readPushButton();
 }
