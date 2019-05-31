@@ -67,12 +67,12 @@ RotaryEncoder     encoder(PIN_A, PIN_B, BUTTON);
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 
 
-void encoderISR()
+void ICACHE_RAM_ATTR encoderISR()                                            //interrupt service routines need to be in ram
 {
   encoder.readAB();
 }
 
-void encoderButtonISR()
+void ICACHE_RAM_ATTR encoderButtonISR()
 {
   encoder.readPushButton();
 }
