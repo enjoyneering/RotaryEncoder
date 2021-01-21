@@ -3,6 +3,8 @@
 # RotaryEncoder
 This is small and fast Arduino library for Rotary Encoder with interrupts. **Capacitors to ground required!!! Otherwise, there will be skipped steps and unstable performance.**
 
+![alt text][rotary_encoder_shematic_image]
+
 - **add 100nF/0.1μF capacitors between A pin & ground**
 - **add 100nF/0.1μF capacitors between B pin & ground**
 - **add 100nF/0.1μF capacitors between button pin & ground**
@@ -22,3 +24,5 @@ Supports:
 [count]:         http://hits.dwyl.io/enjoyneering/RotaryEncoder/badges
 [github-issues]: https://img.shields.io/github/issues/enjoyneering/RotaryEncoder.svg
 [issues]:        https://github.com/enjoyneering/RotaryEncoder/issues/
+
+[rotary_encoder_shematic_image]: https://github.com/enjoyneering/RotaryEncoder/blob/master/images/rotary_encoder_shematic.png
