@@ -49,16 +49,46 @@ int16_t position = 0;
 RotaryEncoder encoder(PIN_A, PIN_B, BUTTON);
 
 
+/**************************************************************************/
+/*
+    encoderISR()
+
+    Encoder A & B pin interrupt service routine
+
+    NOTE:
+    - use interrupt pin!!!
+    - add 100nF/0.1uF capacitors between A pin & ground!!!
+    - add 100nF/0.1uF capacitors between B pin & ground!!!
+*/
+/**************************************************************************/
 void encoderISR()
 {
   encoder.readAB();
 }
 
+/**************************************************************************/
+/*
+    encoderButtonISR()
+
+    Encoder button interrupt service routine
+
+    NOTE:
+    - use interrupt pin!!!
+    - add 100nF/0.1uF capacitors between pin & ground!!!
+*/
+/**************************************************************************/
 void encoderButtonISR()
 {
   encoder.readPushButton();
 }
 
+/**************************************************************************/
+/*
+    setup()
+
+    Main setup
+*/
+/**************************************************************************/
 void setup()
 {
   encoder.begin();                                                           //set encoders pins as input & enable built-in pullup resistors
@@ -69,6 +99,13 @@ void setup()
   Serial.begin(115200);
 }
 
+/**************************************************************************/
+/*
+    loop()
+
+    Main loop
+*/
+/**************************************************************************/
 void loop()
 {
   if (position != encoder.getPosition())
