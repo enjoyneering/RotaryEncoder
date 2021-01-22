@@ -76,7 +76,7 @@ LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POS
     Encoder A & B pin interrupt service routine
 
     NOTE:
-    - use interrupt pin!!!
+    - use interrupt pin for A pin!!!
     - add 100nF/0.1uF capacitors between A pin & ground!!!
     - add 100nF/0.1uF capacitors between B pin & ground!!!
 */
