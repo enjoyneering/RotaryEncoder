@@ -50,7 +50,6 @@
 #pragma GCC optimize ("Os")    //code optimization controls, "O2" or "O3" code performance & "Os" code size
 
 #include <Wire.h>
-#include <TimerOne.h>          //https://github.com/PaulStoffregen/TimerOne
 #include <LiquidCrystal_I2C.h> //https://github.com/enjoyneering/LiquidCrystal_I2C
 #include <RotaryEncoder.h>
 
@@ -59,7 +58,7 @@
 
 #define LCD_SPACE_SYMBOL 0x20  //space symbol from lcd ROM, see p.9 of GDM2004D datasheet
 
-#define PIN_A            5     //ky-040 clk pin,             add 100nF/0.1uF capacitors between pin & ground!!!
+#define PIN_A            2     //ky-040 clk pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
 #define PIN_B            4     //ky-040 dt  pin,             add 100nF/0.1uF capacitors between pin & ground!!!
 #define BUTTON           3     //ky-040 sw  pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
 
@@ -81,11 +80,9 @@ void encoderButtonISR()
 
 void setup()
 {
-  Timer1.initialize();                                                       //optionally timer's period can be set here in usec, default 1 sec. this breaks analogWrite() for pins 9 & 10
-
   encoder.begin();                                                           //set encoders pins as input & enable built-in pullup resistors
 
-  Timer1.attachInterrupt(encoderISR, 10000);                                 //call encoderISR()    every 10000 microseconds/0.01 seconds
+  attachInterrupt(digitalPinToInterrupt(PIN_A),  encoderISR,       CHANGE);  //call encoderISR()    every high->low or low->high changes
   attachInterrupt(digitalPinToInterrupt(BUTTON), encoderButtonISR, FALLING); //call pushButtonISR() every high to low changes
 
   /* LCD connection check */ 
@@ -102,6 +99,8 @@ void setup()
 
   lcd.print(F("PCF8574 is OK"));                                             //(F()) saves string to flash & keeps dynamic memory free
   delay(1500);
+
+  Wire.setClock(400000);                                                     //experimental! AVR i2c bus speed: 31kHz..400kHz/31000UL..400000UL, default 100000UL
 
   lcd.clear();
 
