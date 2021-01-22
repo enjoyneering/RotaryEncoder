@@ -59,7 +59,8 @@
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
    ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   STM32   Core          - https://github.com/stm32duino/Arduino_Core_STM32
+                         - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
@@ -139,12 +140,12 @@ template <typename T> T RotaryEncoderAdvanced<T>::getStepsPerClick()
     Set steps per click value
 
     NOTE:
-    - TODO: #pragma gcc error ("division by zero is forbidden")
+    - TODO: #pragma gcc error ("division by zero is prohibited")
 */
 /**************************************************************************/
 template <typename T> void RotaryEncoderAdvanced<T>::setStepsPerClick(T value)
 {
-  if (value == 0) return; //sanity check, division by zero is forbidden
+  if (value == 0) return; //division by zero is prohibited
 
   _stepsPerClick = value;
 }
