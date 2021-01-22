@@ -56,7 +56,7 @@ RotaryEncoder encoder(PIN_A, PIN_B, BUTTON);
     Encoder A & B pin interrupt service routine
 
     NOTE:
-    - use interrupt pin!!!
+    - use interrupt pin for A pin!!!
     - add 100nF/0.1uF capacitors between A pin & ground!!!
     - add 100nF/0.1uF capacitors between B pin & ground!!!
 */
