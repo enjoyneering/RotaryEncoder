@@ -3,7 +3,7 @@
    This is an Arduino library for Quadrature Rotary Encoder 
 
    written by : enjoyneering79
-   sourse code: https://github.com/enjoyneering/
+   sourse code: https://github.com/enjoyneering/RotaryEncoder
 
    This library uses interrupts, specials pins are required to interface
    Board:                                    int.0  int.1  int.2  int.3  int.4  int.5            Level
@@ -59,7 +59,8 @@
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
    ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   STM32   Core          - https://github.com/stm32duino/Arduino_Core_STM32
+                         - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
@@ -124,37 +125,42 @@ void RotaryEncoder::begin()
 /**************************************************************************/
 void RotaryEncoder::readAB()
 {
-  noInterrupts();                                       //disable interrupts
+  noInterrupts();                                               //disable interrupts
 
+  #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__) //slow MCU
+  _currValueAB  = (uint8_t)_digitalReadFast(_encoderA) << 1;
+  _currValueAB |= (uint8_t)_digitalReadFast(_encoderB);
+  #else                                                         //fast MCU
   _currValueAB  = digitalRead(_encoderA) << 1;
   _currValueAB |= digitalRead(_encoderB);
+  #endif
 
   switch ((_prevValueAB | _currValueAB))
   {
-    #if defined(__AVR__)                                //slow MCU
-    case 0b0001:                                        //CW states, 1 count  per click
-  //case 0b0001: case 0b1110:                           //CW states, 2 counts per click
-    #else                                               //fast MCU
-    case 0b0001: case 0b1110:                           //CW states, 1 count  per click
-  //case 0b0001: case 0b1110: case 0b1000: case 0b0111: //CW states, 2 counts per click
+    #if defined(__AVR__)                                        //slow MCU
+    case 0b1110:                                                //CW states, 1 count  per click
+  //case 0b0001: case 0b1110:                                   //CW states, 2 counts per click
+    #else                                                       //fast MCU
+    case 0b0001: case 0b1110:                                   //CW states, 1 count  per click
+  //case 0b0001: case 0b1110: case 0b1000: case 0b0111:         //CW states, 2 counts per click
     #endif
       _counter++;
       break;
 
-    #if defined(__AVR__)                                //slow MCU
-    case 0b0100:                                        //CCW states, 1 count  per click
-  //case 0b0100: case 0b1011:                           //CCW states, 2 count  per click
-    #else                                               //fast MCU
-    case 0b0100: case 0b1011:                           //CCW states, 1 count  per click
-  //case 0b0100: case 0b1011: case 0b0010: case 0b1101: //CCW states, 2 counts per click
+    #if defined(__AVR__)                                        //slow MCU
+    case 0b0100:                                                //CCW states, 1 count  per click
+  //case 0b0100: case 0b1011:                                   //CCW states, 2 count  per click
+    #else                                                       //fast MCU
+    case 0b0100: case 0b1011:                                   //CCW states, 1 count  per click
+  //case 0b0100: case 0b1011: case 0b0010: case 0b1101:         //CCW states, 2 counts per click
     #endif
       _counter--;
       break;
   }
 
-  _prevValueAB = _currValueAB << 2;                     //update previouse state
+  _prevValueAB = _currValueAB << 2;                             //update previouse state
 
-  interrupts();                                         //enable interrupts
+  interrupts();                                                 //enable interrupts
 }
 
 /**************************************************************************/
@@ -210,8 +216,11 @@ int16_t RotaryEncoder::getPosition()
 /**************************************************************************/
 bool RotaryEncoder::getPushButton()
 {
-  if (_buttonState == HIGH) return false;               //button is not pressed
-                            return _buttonState = true; //button is     pressed
+  if (_buttonState == true) return false; //button is not pressed
+
+  _buttonState = true;                    //else button is pressed, flip variable to idle value
+
+  return _buttonState;
 }
 
 /**************************************************************************/
@@ -233,11 +242,62 @@ void RotaryEncoder::setPosition(int16_t position)
     Manualy sets encoder push button state
 
     NOTE:
-    - "true" buttorn  is pressed
+    - "true"  buttorn is pressed
     - "false" buttorn is not pressed
 */
 /**************************************************************************/
 void RotaryEncoder::setPushButton(bool state)
 {
-  _buttonState = ~state;
+  _buttonState = !state;
 }
+
+
+/**************************************************************************/
+/*
+    _fastDigitalRead()
+
+    Replacemet for Arduino AVR "digitalRead()" function
+
+    NOTE:
+    - make shure you call "pinMode(pin, OUTPUT)" before using this
+      function
+    - Arduino AVR "digitalRead()" is so slow that MCU can't read both
+      "A" & "B" pins fast enough during ISR to determine position of encoder
+    - about 2.86 times faster than "digitalRead()"
+    - ATmega8, ATmega168 & ATmega328P have 3 ports for pins:
+      - port B, digital pins 8..13 (do not use B6 & B7, mapped to crystal)
+      - port C, analog input pins 0..5
+      - port D, digital pins 0..7  (do not use PD0 & PD1, mapped to serial)
+    - each port is controlled by 3 registers & each bit of these registers
+        corresponds to a single pin:
+      - DDRx, port x Data Direction Register & determines whether the pin
+        is an INPUT or OUTPUT (where x can be B, C or D)
+      - PORTx, port x Data Register & controls whether the pin is HIGH or
+        LOW
+      - PINx, port x Input Pins Register & reads the state of INPUT pins
+*/
+/**************************************************************************/
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
+bool RotaryEncoder::_digitalReadFast(uint8_t pin)
+{
+  switch (pin) //write spaces around " ... ", otherwise it may be parsed wrong
+  {
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+      return (PIND) &  (1 << (pin % 8)); //pin 2 (PIND) & 0x04; or (PIND) & (1 << PD2);
+
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+      return (PINB) &  (1 << (pin % 8)); //pin 3 (PIND) & 0x08; or (PIND) & (1 << PD3);
+  }
+
+  return false;
+}
+#endif
