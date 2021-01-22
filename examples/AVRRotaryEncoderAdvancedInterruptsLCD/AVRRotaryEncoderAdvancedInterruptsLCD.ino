@@ -41,7 +41,8 @@
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
    ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   STM32   Core          - https://github.com/stm32duino/Arduino_Core_STM32
+                         - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
@@ -50,7 +51,6 @@
 #pragma GCC optimize ("Os")          //code optimization controls, "O2" or "O3" code performance & "Os" code size
 
 #include <Wire.h>
-#include <TimerOne.h>                //https://github.com/PaulStoffregen/TimerOne
 #include <LiquidCrystal_I2C.h>       //https://github.com/enjoyneering/LiquidCrystal_I2C
 #include <RotaryEncoderAdvanced.h>
 #include <RotaryEncoderAdvanced.cpp> //for some reason linker can't find the *.cpp :(
@@ -60,7 +60,7 @@
 
 #define LCD_SPACE_SYMBOL 0x20        //space symbol from lcd ROM, see p.9 of GDM2004D datasheet
 
-#define PIN_A            5           //ky-040 clk pin,             add 100nF/0.1uF capacitors between pin & ground!!!
+#define PIN_A            2           //ky-040 clk pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
 #define PIN_B            4           //ky-040 dt  pin,             add 100nF/0.1uF capacitors between pin & ground!!!
 #define BUTTON           3           //ky-040 sw  pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
 
@@ -70,23 +70,51 @@ RotaryEncoderAdvanced<float> encoder(PIN_A, PIN_B, BUTTON, 0.1, 0.0, 3.3);      
 LiquidCrystal_I2C            lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 
 
+/**************************************************************************/
+/*
+    encoderISR()
+
+    Encoder A & B pin interrupt service routine
+
+    NOTE:
+    - use interrupt pin for A pin!!!
+    - add 100nF/0.1uF capacitors between A pin & ground!!!
+    - add 100nF/0.1uF capacitors between B pin & ground!!!
+*/
+/**************************************************************************/
 void encoderISR()
 {
   encoder.readAB();
 }
 
+/**************************************************************************/
+/*
+    encoderButtonISR()
+
+    Encoder button interrupt service routine
+
+    NOTE:
+    - use interrupt pin!!!
+    - add 100nF/0.1uF capacitors between pin & ground!!!
+*/
+/**************************************************************************/
 void encoderButtonISR()
 {
   encoder.readPushButton();
 }
 
+/**************************************************************************/
+/*
+    setup()
+
+    Main setup
+*/
+/**************************************************************************/
 void setup()
 {
-  Timer1.initialize();                                                       //optionally timer's period can be set here in usec, default 1 sec. this breaks analogWrite() for pins 9 & 10
-
   encoder.begin();                                                           //set encoders pins as input & enable built-in pullup resistors
 
-  Timer1.attachInterrupt(encoderISR, 10000);                                 //call encoderISR()    every 10000 microseconds/0.01 seconds
+  attachInterrupt(digitalPinToInterrupt(PIN_A),  encoderISR,       CHANGE);  //call encoderISR()    every high->low or low->high changes
   attachInterrupt(digitalPinToInterrupt(BUTTON), encoderButtonISR, FALLING); //call pushButtonISR() every high to low changes
 
   /* LCD connection check */ 
@@ -116,6 +144,13 @@ void setup()
   lcd.print(F("UPTIME:"));
 }
 
+/**************************************************************************/
+/*
+    loop()
+
+    Main loop
+*/
+/**************************************************************************/
 void loop()
 {
   lcd.setCursor(8, 0);
