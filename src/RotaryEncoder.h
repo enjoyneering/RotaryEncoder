@@ -3,7 +3,7 @@
    This is an Arduino library for Quadrature Rotary Encoder 
 
    written by : enjoyneering79
-   sourse code: https://github.com/enjoyneering/
+   sourse code: https://github.com/enjoyneering/RotaryEncoder
 
    This library uses interrupts, specials pins are required to interface
    Board:                                    int.0  int.1  int.2  int.3  int.4  int.5            Level
@@ -59,7 +59,8 @@
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
    ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   STM32   Core          - https://github.com/stm32duino/Arduino_Core_STM32
+                         - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
@@ -68,18 +69,18 @@
 #ifndef RotaryEncoder_h
 #define RotaryEncoder_h
 
-#if defined(ARDUINO) && ((ARDUINO) >= 100) //arduino core v1.0 or later
+#if defined(ARDUINO) && ((ARDUINO) >= 100) //Arduino core v1.0 or later
 #include <Arduino.h>
 #else
 #include <WProgram.h>
 #endif
 
 #if defined(__AVR__)
-#include <avr/pgmspace.h>                  //use for PROGMEM Arduino AVR
+#include <avr/pgmspace.h>                  //PROGMEM support Arduino AVR
 #elif defined(ESP8266)
-#include <pgmspace.h>                      //use for PROGMEM Arduino ESP8266
+#include <pgmspace.h>                      //PROGMEM support Arduino ESP8266
 #elif defined(_VARIANT_ARDUINO_STM32_)
-#include <avr/pgmspace.h>                  //use for PROGMEM Arduino STM32
+#include <avr/pgmspace.h>                  //PROGMEM  support Arduino STM32
 #endif
 
 
@@ -88,28 +89,31 @@ class RotaryEncoder
   public:
     RotaryEncoder(uint8_t encoderA, uint8_t encoderB, uint8_t encoderButton);
 
-    void     begin(void);
-    void     readAB(void);
-    void     readPushButton(void);
+    void     begin();
+    void     readAB();
+    void     readPushButton();
 
-    int16_t  getPosition(void);
-    bool     getPushButton(void);
+    int16_t  getPosition();
+    bool     getPushButton();
 
     void     setPosition(int16_t position);
     void     setPushButton(bool state);
 
+  protected:
+    volatile int16_t _counter = 0;        //encoder click counter, limit -32768..32767
+
   private:
+    volatile bool    _buttonState = true; //encoder button status, idle value is "true" because internal pull-up resistor is enabled
+    volatile uint8_t _prevValueAB = 0;    //previouse state of "A"+"B"
+    volatile uint8_t _currValueAB = 0;    //current   state of "A"+"B"
+
              uint8_t _encoderA;           //pin "A"
              uint8_t _encoderB;           //pin "B"
              uint8_t _encoderButton;      //pin "button"
 
-    volatile uint8_t _prevValueAB = 0;    //previouse state of "A"+"B"
-    volatile uint8_t _currValueAB = 0;    //current   state of "A"+"B"
-    volatile bool    _buttonState = true; //encoder button status, idle value is "true" because internal pull-up resistor is enabled
-
-  protected:
-    volatile int16_t _counter     = 0;    //encoder click counter, limits -32768..32767
-
+    #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
+    bool _digitalReadFast(uint8_t pin);
+    #endif
 };
 
 #endif
