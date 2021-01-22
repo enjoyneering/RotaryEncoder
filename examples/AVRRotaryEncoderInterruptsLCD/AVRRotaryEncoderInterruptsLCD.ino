@@ -69,16 +69,46 @@ RotaryEncoder     encoder(PIN_A, PIN_B, BUTTON);
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 
 
+/**************************************************************************/
+/*
+    encoderISR()
+
+    Encoder A & B pin interrupt service routine
+
+    NOTE:
+    - use interrupt pin!!!
+    - add 100nF/0.1uF capacitors between A pin & ground!!!
+    - add 100nF/0.1uF capacitors between B pin & ground!!!
+*/
+/**************************************************************************/
 void encoderISR()
 {
   encoder.readAB();
 }
 
+/**************************************************************************/
+/*
+    encoderButtonISR()
+
+    Encoder button interrupt service routine
+
+    NOTE:
+    - use interrupt pin!!!
+    - add 100nF/0.1uF capacitors between pin & ground!!!
+*/
+/**************************************************************************/
 void encoderButtonISR()
 {
   encoder.readPushButton();
 }
 
+/**************************************************************************/
+/*
+    setup()
+
+    Main setup
+*/
+/**************************************************************************/
 void setup()
 {
   encoder.begin();                                                           //set encoders pins as input & enable built-in pullup resistors
@@ -115,6 +145,13 @@ void setup()
   lcd.print(F("UPTIME  :"));
 }
 
+/**************************************************************************/
+/*
+    loop()
+
+    Main loop
+*/
+/**************************************************************************/
 void loop()
 {
   lcd.setCursor(10, 0);
