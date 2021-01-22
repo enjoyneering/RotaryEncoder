@@ -59,7 +59,8 @@
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
    ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   STM32   Core          - https://github.com/stm32duino/Arduino_Core_STM32
+                         - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
@@ -76,19 +77,19 @@ template <typename T> class RotaryEncoderAdvanced : public RotaryEncoder
   public:
     RotaryEncoderAdvanced(uint8_t encoderA, uint8_t encoderB, uint8_t encoderButton, T stepsPerClick, T minValue, T maxValue);
 
-           T    getValue(void);
-           void setValue(T value);
+    T    getValue(void);
+    void setValue(T value);
 
-    inline T    getStepsPerClick(void);
-    inline void setStepsPerClick(T value);
+    T    getStepsPerClick(void);
+    void setStepsPerClick(T value);
 
-    inline T    getMinValue(void);
-    inline void setMinValue(T value);
+    T    getMinValue(void);
+    void setMinValue(T value);
 
-    inline T    getMaxValue(void);
-    inline void setMaxValue(T value);
+    T    getMaxValue(void);
+    void setMaxValue(T value);
 
-           void setValues(T currValue, T stepsPerClick, T minValue, T maxValue);
+    void setValues(T currValue, T stepsPerClick, T minValue, T maxValue);
 
   private:
     T _stepsPerClick; //steps per click
