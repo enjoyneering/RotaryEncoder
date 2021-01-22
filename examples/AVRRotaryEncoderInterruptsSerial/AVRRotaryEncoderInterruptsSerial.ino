@@ -29,7 +29,8 @@
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
    ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   STM32   Core          - https://github.com/stm32duino/Arduino_Core_STM32
+                         - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
@@ -37,12 +38,11 @@
 /***************************************************************************************************/
 #pragma GCC optimize ("Os") //code optimization controls, "O2" or "O3" code performance & "Os" code size
 
-#include <TimerOne.h>       //https://github.com/PaulStoffregen/TimerOne
 #include <RotaryEncoder.h>
 
-#define PIN_A   5           //ky-040 clk pin,             add 100nF/0.1uF capacitors between pin & ground!!!
-#define PIN_B   4           //ky-040 dt  pin,             add 100nF/0.1uF capacitors between pin & ground!!!
-#define BUTTON  3           //ky-040 sw  pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
+#define PIN_A            2     //ky-040 clk pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
+#define PIN_B            4     //ky-040 dt  pin,             add 100nF/0.1uF capacitors between pin & ground!!!
+#define BUTTON           3     //ky-040 sw  pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
 
 int16_t position = 0;
 
@@ -61,11 +61,9 @@ void encoderButtonISR()
 
 void setup()
 {
-  Timer1.initialize();                                                       //optionally timer's period can be set here in usec, default 1 sec, this breaks analogWrite() for pins 9 & 10
-
   encoder.begin();                                                           //set encoders pins as input & enable built-in pullup resistors
 
-  Timer1.attachInterrupt(encoderISR, 10000);                                 //call encoderISR()       every 10000 microseconds/0.01 seconds
+  attachInterrupt(digitalPinToInterrupt(PIN_A),  encoderISR,       CHANGE);  //call encoderISR()    every high->low or low->high changes
   attachInterrupt(digitalPinToInterrupt(BUTTON), encoderButtonISR, FALLING); //call encoderButtonISR() every high to low changes
 
   Serial.begin(115200);
