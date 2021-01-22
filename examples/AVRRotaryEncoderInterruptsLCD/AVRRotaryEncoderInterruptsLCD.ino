@@ -41,7 +41,8 @@
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
    ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   STM32   Core          - https://github.com/stm32duino/Arduino_Core_STM32
+                         - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
