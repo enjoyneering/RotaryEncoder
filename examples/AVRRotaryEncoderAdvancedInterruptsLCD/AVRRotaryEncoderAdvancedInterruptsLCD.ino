@@ -1,6 +1,6 @@
 /***************************************************************************************************/
 /*
-   This is an Arduino library for Quadrature Rotary Encoder 
+   This is an Arduino sketch for RotaryEncoder library using interrupts
 
    written by : enjoyneering
    sourse code: https://github.com/enjoyneering/RotaryEncoder
