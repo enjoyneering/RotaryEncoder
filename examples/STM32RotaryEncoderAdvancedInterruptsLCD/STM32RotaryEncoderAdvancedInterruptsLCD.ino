@@ -1,11 +1,11 @@
 /***************************************************************************************************/
 /*
-   This is an Arduino sketch for RotaryEncoder library using interrupts
+   This is an Arduino sketch for RotaryEncoder library using interrupts 
 
-   written by : enjoyneering79
-   sourse code: https://github.com/enjoyneering/
+   written by : enjoyneering
+   sourse code: https://github.com/enjoyneering/RotaryEncoder
 
-   This sketch uses interrupts, specials pins are required to interface
+   This library uses interrupts, specials pins are required to interface
    Board:                                    int.0  int.1  int.2  int.3  int.4  int.5            Level
    Uno, Mini, Pro, ATmega168, ATmega328..... 2      3      x       x      x     x                5v
    Mega2560................................. 2      3      21      20     19    18               5v
@@ -13,21 +13,9 @@
    Digistump, Trinket, ATtiny85............. 2/physical pin 7                                    5v
    Due, SAM3X8E............................. all digital pins                                    3v
    Zero, ATSAMD21G18........................ all digital pins, except pin 4                      3v
-   Blue Pill, STM32F103xxxx boards.......... all digital pins, maximun 16 pins at the same time  3v
+   Blue Pill, STM32F103xxxx boards.......... all digital pins, maximum 16 pins at the same time  3v
    ESP8266.................................. all digital pins, except gpio6 - gpio11 & gpio16    3v/5v
    ESP32.................................... all digital pins                                    3v
-
-   PCF8574 chip uses I2C bus to communicate, specials pins are required to interface
-   Board:                                    SDA                    SCL                    Level
-   Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5                     5v
-   Mega2560................................. 20                     21                     5v
-   Due, SAM3X8E............................. 20                     21                     3.3v
-   Leonardo, Micro, ATmega32U4.............. 2                      3                      5v
-   Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7    5v
-   Blue Pill, STM32F103xxxx boards.......... PB7                    PB6                    3.3v/5v
-   ESP8266 ESP-01........................... GPIO0/D5               GPIO2/D3               3.3v/5v
-   NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1               3.3v/5v
-   ESP32.................................... GPIO21/D21             GPIO22/D22             3.3v
 
    NOTE:
    - LOW     interrupt trigges whenever the pin is low
@@ -37,29 +25,31 @@
    - FALLING interrupt triggers when the pin goes from high to low
 
    Frameworks & Libraries:
-   TimerOne AVR          - https://github.com/PaulStoffregen/TimerOne
+   AVR     Core          - https://github.com/arduino/ArduinoCore-avr
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
    ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   STM32   Core          - https://github.com/stm32duino/Arduino_Core_STM32
+                         - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
 #include <Wire.h>
-#include <LiquidCrystal_I2C.h>       //https://github.com/enjoyneering/LiquidCrystal_I2C
+#include <LiquidCrystal_I2C.h>     //https://github.com/enjoyneering/LiquidCrystal_I2C
 #include <RotaryEncoderAdvanced.h>
-#include <RotaryEncoderAdvanced.cpp> //for some reason linker can't find the *.cpp :(
 
-#define LCD_ROWS         4           //quantity of lcd rows
-#define LCD_COLUMNS      20          //quantity of lcd columns
 
-#define LCD_SPACE_SYMBOL 0x20        //space symbol from lcd ROM, see p.9 of GDM2004D datasheet
+#define LCD_ROWS         4         //quantity of lcd rows
+#define LCD_COLUMNS      20        //quantity of lcd columns
 
-#define PIN_A            PB13        //ky-040 clk pin, add 100nF/0.1uF capacitors between pin & ground!!!
-#define PIN_B            PB14        //ky-040 dt  pin, add 100nF/0.1uF capacitors between pin & ground!!!
-#define BUTTON           PB15        //ky-040 sw  pin, add 100nF/0.1uF capacitors between pin & ground!!!
+#define LCD_SPACE_SYMBOL 0x20      //space symbol from lcd ROM, see p.9 of GDM2004D datasheet
+
+/* if use SWD pins PA13 & PA14 disconnect ST-LINK right after upload */
+#define PIN_A            PB12      //ky-040 clk pin, add 100nF/0.1uF capacitors between pin & ground!!!
+#define PIN_B            PB15      //ky-040 dt  pin, add 100nF/0.1uF capacitors between pin & ground!!!
+#define BUTTON           PB8       //ky-040 sw  pin, add 100nF/0.1uF capacitors between pin & ground!!!
 
 uint16_t buttonCounter = 0;
 
