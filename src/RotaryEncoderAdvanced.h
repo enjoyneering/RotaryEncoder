@@ -2,8 +2,8 @@
 /*
    This is an Arduino library for Quadrature Rotary Encoder 
 
-   written by : enjoyneering79
-   sourse code: https://github.com/enjoyneering/
+   written by : enjoyneering
+   sourse code: https://github.com/enjoyneering/RotaryEncoder
 
    This library uses interrupts, specials pins are required to interface
    Board:                                    int.0  int.1  int.2  int.3  int.4  int.5            Level
@@ -18,7 +18,7 @@
    ESP32.................................... all digital pins                                    3v
 
    NOTE:
-   - Quadrature encoder makes two waveforms that are 90° out of phase:
+   - Quadrature encoder makes two waveforms that are 90 degree out of phase:
                            _______         _______         __
                   PinA ___|       |_______|       |_______|   PinA
           CCW <--              _______         _______
@@ -55,7 +55,7 @@
           - CCW states 0b0010, 0b0100, 0b1011, 0b1101
 
    Frameworks & Libraries:
-   TimerOne AVR          - https://github.com/PaulStoffregen/TimerOne
+   AVR     Core          - https://github.com/arduino/ArduinoCore-avr
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
    ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
@@ -69,7 +69,7 @@
 #ifndef RotaryEncoderAdvanced_h
 #define RotaryEncoderAdvanced_h
 
-#include <RotaryEncoder.h>
+#include "RotaryEncoder.h"
 
 
 template <typename T> class RotaryEncoderAdvanced : public RotaryEncoder
@@ -77,16 +77,16 @@ template <typename T> class RotaryEncoderAdvanced : public RotaryEncoder
   public:
     RotaryEncoderAdvanced(uint8_t encoderA, uint8_t encoderB, uint8_t encoderButton, T stepsPerClick, T minValue, T maxValue);
 
-    T    getValue(void);
+    T    getValue();
     void setValue(T value);
 
-    T    getStepsPerClick(void);
+    T    getStepsPerClick();
     void setStepsPerClick(T value);
 
-    T    getMinValue(void);
+    T    getMinValue();
     void setMinValue(T value);
 
-    T    getMaxValue(void);
+    T    getMaxValue();
     void setMaxValue(T value);
 
     void setValues(T currValue, T stepsPerClick, T minValue, T maxValue);
@@ -96,5 +96,7 @@ template <typename T> class RotaryEncoderAdvanced : public RotaryEncoder
     T _minValue;      //min returned value
     T _maxValue;      //max returned value
 };
+
+#include "RotaryEncoderAdvanced.tpp" //linker can't find the *.cpp, see https://stackoverflow.com/questions/495021/why-can-templates-only-be-implemented-in-the-header-file 
 
 #endif
