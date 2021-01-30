@@ -13,7 +13,7 @@ Supports:
 
 [license-badge]: https://img.shields.io/badge/License-GPLv3-blue.svg
 [license]:       https://choosealicense.com/licenses/gpl-3.0/
-[version]:       https://img.shields.io/badge/Version-1.4.1-green.svg
+[version]:       https://img.shields.io/badge/Version-1.4.2-green.svg
 [stars]:         https://img.shields.io/github/stars/enjoyneering/RotaryEncoder.svg
 [stargazers]:    https://github.com/enjoyneering/RotaryEncoder/stargazers
 [hit-count]:     http://hits.dwyl.io/enjoyneering/RotaryEncoder.svg
