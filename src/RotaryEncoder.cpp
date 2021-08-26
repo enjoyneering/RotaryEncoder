@@ -242,8 +242,8 @@ void RotaryEncoder::setPosition(int16_t position)
     Manualy sets encoder push button state
 
     NOTE:
-    - "true"  buttorn is pressed
-    - "false" buttorn is not pressed
+    - "true"  button is pressed
+    - "false" button is not pressed
 */
 /**************************************************************************/
 void RotaryEncoder::setPushButton(bool state)
