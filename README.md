@@ -1,4 +1,4 @@
-[![license-badge][]][license] ![version] [![stars][]][stargazers] ![hit-count] [![github-issues][]][issues]
+[![license-badge][]][license] ![version] [![stars][]][stargazers] [![github-issues][]][issues]
 
 # RotaryEncoder
 This is small and fast Arduino library for Rotary Encoder with interrupts. **Debounce capacitors to ground required!!! Otherwise, skipped steps and unstable performance may occur.**
